@@ -10,12 +10,17 @@ export default new Router({
   routes: [
     {
       path: '/admin',
-      name: 'home',
       component: Home,
       children: [
         {
-          path: 'list',
+          path: '',
           component: List,
+          props: {page: 1}
+        },
+        {
+          path: 'list/:page',
+          component: List,
+          props: true
         },
         {
           path: 'upload',

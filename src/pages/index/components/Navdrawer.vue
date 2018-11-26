@@ -1,12 +1,15 @@
 <template lang="pug">
   v-navigation-drawer(app)
-    v-toolbar(flat)
+    v-toolbar(flat) 
+      v-toolbar-side-icon
+      v-toolbar-title VMusic
     v-list
       v-list-tile(v-for="(item, index) in list" :key="item.title" :to="item.to")
         v-list-tile-action
           v-icon {{item.icon}}
         v-list-tile-content
           v-list-tile-title {{item.title}}
+
 </template>
 
 <script>
@@ -14,10 +17,14 @@ export default {
   data(){
     return {
       list: [
-        {title: '歌曲列表', icon: 'dashboard', to: '/admin/list/1'},
-        {title: '上传文件', icon: 'question_answer', to: '/admin/upload'},
+        {title: 'My Library', icon: 'library_music', to: '/library'},
       ]
     }
   }
 }
 </script>
+
+
+<style lang="scss" scoped>
+
+</style>

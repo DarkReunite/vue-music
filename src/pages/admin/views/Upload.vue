@@ -14,34 +14,60 @@
             v-list-tile(avatar)
               v-list-tile-avatar
                 img(v-if="item.blobURL" :src="item.blobURL")
-                img(v-else src="../../../assets/logo.png")
+                img(v-else src="/logo.png")
               v-list-tile-content
                 v-list-tile-title {{item.title}}
                 v-list-tile-sub-title {{item.artist}} - {{item.ablum}}
             v-divider(inset)
       v-card-actions(v-if="mp3Info")
         v-spacer
-        v-btn 上传
+        v-btn(@click="uploadFile") 上传
 </template>
 
 <script>
 import analyzeFile from "@/plugins/analyzeFile";
+import {sendMp3FileAndPic, sendMp3Info} from '@/server/sendData';
 export default {
   data() {
     return {
       mp3Info:null,
-      mp3List:null,
+      mp3File:null,
     }
   },
   
   methods: {
-    async chooseFile(e) {
-      let filelist = e.target.files;
-      let mp3info = await Promise.all(analyzeFile(filelist));
-      this.mp3Info = mp3info;
-      
-      
+    /* eslint-disable */
 
+    // 选择文件
+    // 分析歌曲文件的内容并提取出歌曲的图片和各类信息
+    async chooseFile(e) {
+      this.mp3Info = await Promise.all(analyzeFile(e.target.files));
+      
+      this.mp3File = (function () {
+        let mp3file = [];
+        for (let i = 0; i < e.target.files.length; i++) {
+          mp3file.push(e.target.files[i]);
+        }
+        return mp3file;
+      })();
+      
+    },
+
+    // 上传歌曲的文件和相关信息
+    async uploadFile(){
+      try {
+        let idList = await Promise.all(sendMp3Info(this.mp3Info));
+        
+        idList.forEach((value, index) => {
+          this.mp3Info[index].id = value.data
+        });
+
+        let resList = await Promise.all(sendMp3FileAndPic(this.mp3File, this.mp3Info));
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
     }
   }
 }

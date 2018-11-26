@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import Library from './views/Library.vue';
 
 Vue.use(Router)
 
@@ -9,8 +10,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: '',
+          redirect: '/library'
+        },
+        {
+          path: 'library',
+          component: Library
+        }
+      ]
     }
   ]
 })
